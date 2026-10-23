@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["auth", "public"]
+}
+
+enum MembershipRole {
+  COLLABORATOR
+  OPERATIONS
+
+  @@map("membership_role")
+  @@schema("public")
+}
+
+enum EquipmentStatus {
+  AVAILABLE
+  MAINTENANCE
+  RETIRED
+
+  @@map("equipment_status")
+  @@schema("public")
+}
+
+model AuthUser {
+  id          String       @id @db.Uuid
+  memberships Membership[]
+
+  @@map("users")
+  @@schema("auth")
+}
+
+model Tenant {
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug                String              @unique(map: "tenants_slug_key")
+  name                String
+  createdAt           DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime            @default(now()) @map("updated_at") @db.Timestamptz(6)
+  memberships         Membership[]
+  equipmentCategories EquipmentCategory[]
+  equipment           Equipment[]
+  loans               Loan[]
+  auditLogs           AuditLog[]
+
+  @@map("tenants")
+  @@schema("public")
+}
+
+model Membership {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId      String         @map("tenant_id") @db.Uuid
+  userId        String         @map("user_id") @db.Uuid
+  role          MembershipRole @default(COLLABORATOR)
+  displayName   String         @map("display_name")
+  department    String?
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  user          AuthUser       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  borrowedLoans Loan[]         @relation("BorrowerLoans")
+  returnedLoans Loan[]         @relation("ReturnerLoans")
+  auditLogs     AuditLog[]
+
+  @@unique([tenantId, userId], map: "memberships_tenant_user_key")
+  @@unique([tenantId, id], map: "memberships_tenant_id_id_key")
+  @@index([userId], map: "memberships_user_id_idx")
+  @@map("memberships")
+  @@schema("public")
+}
+
+model EquipmentCategory {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId  String      @map("tenant_id") @db.Uuid
+  name      String
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
+  tenant    Tenant      @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  equipment Equipment[]
+
+  @@unique([tenantId, id], map: "equipment_categories_tenant_id_id_key")
+  @@map("equipment_categories")
+  @@schema("public")
+}
+
+model Equipment {
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId       String            @map("tenant_id") @db.Uuid
+  categoryId     String            @map("category_id") @db.Uuid
+  name           String
+  assetTag       String            @map("asset_tag")
+  serialNumber   String?           @map("serial_number")
+  pickupLocation String            @map("pickup_location")
+  status         EquipmentStatus   @default(AVAILABLE)
+  notes          String?
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
+  tenant         Tenant            @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  category       EquipmentCategory @relation(fields: [tenantId, categoryId], references: [tenantId, id], onDelete: Restrict)
+  loans          Loan[]
+
+  @@unique([tenantId, id], map: "equipment_tenant_id_id_key")
+  @@unique([tenantId, assetTag], map: "equipment_tenant_asset_tag_key")
+  @@index([tenantId, categoryId], map: "equipment_tenant_category_idx")
+  @@index([tenantId, status], map: "equipment_tenant_status_idx")
+  @@map("equipment")
+  @@schema("public")
+}
+
+model Loan {
+  id                     String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId               String      @map("tenant_id") @db.Uuid
+  equipmentId            String      @map("equipment_id") @db.Uuid
+  borrowerMembershipId   String      @map("borrower_membership_id") @db.Uuid
+  borrowedAt             DateTime    @default(now()) @map("borrowed_at") @db.Timestamptz(6)
+  dueAt                  DateTime    @map("due_at") @db.Timestamptz(6)
+  returnedAt             DateTime?   @map("returned_at") @db.Timestamptz(6)
+  returnedByMembershipId String?     @map("returned_by_membership_id") @db.Uuid
+  createdAt              DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
+  tenant                 Tenant      @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  equipment              Equipment   @relation(fields: [tenantId, equipmentId], references: [tenantId, id], onDelete: Restrict)
+  borrower               Membership  @relation("BorrowerLoans", fields: [tenantId, borrowerMembershipId], references: [tenantId, id], onDelete: Restrict)
+  returnedBy             Membership? @relation("ReturnerLoans", fields: [tenantId, returnedByMembershipId], references: [tenantId, id], onDelete: Restrict)
+
+  @@unique([tenantId, id], map: "loans_tenant_id_id_key")
+  @@map("loans")
+  @@schema("public")
+}
+
+model AuditLog {
+  id                String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId          String     @map("tenant_id") @db.Uuid
+  actorMembershipId String     @map("actor_membership_id") @db.Uuid
+  action            String
+  resourceType      String     @map("resource_type")
+  resourceId        String     @map("resource_id") @db.Uuid
+  metadata          Json       @default("{}")
+  occurredAt        DateTime   @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  tenant            Tenant     @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  actor             Membership @relation(fields: [tenantId, actorMembershipId], references: [tenantId, id], onDelete: Restrict)
+
+  @@index([tenantId, occurredAt(sort: Desc)], map: "audit_logs_tenant_occurred_at_idx")
+  @@index([tenantId, resourceType, resourceId], map: "audit_logs_resource_idx")
+  @@map("audit_logs")
+  @@schema("public")
+}
