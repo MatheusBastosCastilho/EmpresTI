@@ -1,5 +1,12 @@
 # EmpresTI
 
+## Banco de desenvolvimento
+
+O projeto usa o schema `dev` no Supabase próprio. A migration inicial foi
+validada localmente e aplicada no remoto. Consulte [setup dev](docs/setup-dev.md)
+para conexões privadas, verificações locais e ativação do workflow de migrations
+no GitHub. O login publicado abaixo continua demonstrativo.
+
 ## Entrega atual: tela de login
 
 [Abrir tela publicada](https://empres-ti-beryl.vercel.app/login)

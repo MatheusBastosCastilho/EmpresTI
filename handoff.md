@@ -1,20 +1,25 @@
 # Handoff
 
-- Tarefa: criar repositório próprio e enviar a cópia local, autorizado pelo usuário.
-- Repositório público: https://github.com/MatheusBastosCastilho/EmpresTI
-- Branch: main; origin aponta para o repositório próprio.
-- Esta cópia não tinha .git; histórico novo iniciado, sem histórico do amigo.
-- Importação inicial inclui o código existente e a tela de login da T03.
-- Login: CA-02, CA-09 e CA-11; envio demonstrativo, sem autenticação real.
-- / redireciona para /login; tema Nocturne, Open Sans e Phosphor.
-- Credenciais não são enviadas nem persistidas; usar dados fictícios.
-- Validação anterior: 4 testes passaram; lint e build passaram, conforme handoff anterior.
-- Aplicação não alterada nesta tarefa; checks não repetidos.
-- Nenhuma migration executada; nenhuma alteração no banco nesta tarefa.
-- .env.example sem valores; arquivos .env reais ignorados pelo Git.
-- Publicado em 23/10/2026: https://empres-ti-beryl.vercel.app/login
-- Projeto Vercel: empres-ti; deploy dpl_3Lcr1BSKo49cJJQHvWFjY2ZJHvfE.
-- Publicação anterior via Vercel Drop, sem vínculo Git.
-- Vercel não alterada nem conectada ao novo repositório nesta tarefa.
-- Não iniciar outras telas nem autenticação real sem nova autorização.
-- Próximo passo: aguarde a escolha da próxima tarefa pelo usuário.
+- Concluído em 05/11/2026: migration inicial dev aplicada e verificada localmente e no Supabase próprio.
+- GitHub: MatheusBastosCastilho/EmpresTI; main publicada no commit 979929c.
+- Branch atual: docs/planejamento-integracoes; commit e push autorizados pelo usuário em 05/11/2026.
+- Vercel ligada ao nosso GitHub, produção acompanha main; domínio empres-ti-beryl.vercel.app preservado.
+- Supabase existente escolhido pelo usuário: puwkfemwkgsmmfjdqdgq, Free, Oregon us-west-2. Não criar outro projeto.
+- DDL aprovado em 23/10/2026; reset local autorizado por 'pode continuar pra gente acabar' em 05/11/2026.
+- Migration 20261023134345_initial_dev aplicada em dev; histórico ativo prisma/migrations-dev.
+- Histórico importado prisma/migrations preservado; não reaplicar public no remoto nem editar migrations compartilhadas.
+- Local e remoto: seis tabelas com RLS e 14 policies; auth preservado; remoto sem tabelas public e sem acesso anon a dev.
+- Smoke local passou: constraints, exclusividade de empréstimo, prazo de 14 dias e isolamento entre dois tenants.
+- Critérios comprovados neste recorte incluem CA-01 e CA-03 de 002-modelo-dados; suíte completa e seed ainda pendentes.
+- Componentes: Tests 4 passed (4), em 2 arquivos, com --pool=threads --maxWorkers=1 --no-isolate.
+- Lint, build, validate Prisma, nove checagens de destino, sintaxe YAML e diff --check passaram.
+- Teste concorrente com build teve timeout de worker; repetição sem concorrência e sem isolate passou.
+- .env local e .env.remote-dev privados e ignorados; senha codificada corretamente para URL. Não imprimir valores.
+- Remoto usa Session pooler 5432 com schema=dev e sslmode=require; conexão direta IPv6 não resolveu nesta máquina.
+- GitHub environment dev criado com branch main permitida; secret DIRECT_URL configurado criptografado e verificado por metadata.
+- Workflow manual .github/workflows/dev-database.yml e script scripts/deploy-dev.mjs prontos; aguardam merge do PR em main.
+- Script só aceita o projeto/dev/TLS autorizados; migrate deploy foi verificado e não há migrations remotas pendentes.
+- Nenhuma variável de banco Vercel configurada; autenticação e formulário publicados continuam demonstrativos.
+- Referências do professor preservadas em docs/referencias/gabriel; regras locais de empréstimo imediato prevalecem.
+- Guia completo: docs/setup-dev.md; próximos recortes: docs/plano-continuidade.md. Sistema completo ainda não implementado.
+- Próximo passo: revisar e integrar o PR; executar workflow manual dev; depois escolher a fatia de autenticação e prova página/API/banco.
