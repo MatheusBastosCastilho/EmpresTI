@@ -4,24 +4,32 @@ import { useEffect, useState } from "react";
 
 type Health = { status: string; database: string; message?: string };
 
+async function loadHealth(): Promise<Health> {
+  try {
+    const response = await fetch("/health", { cache: "no-store" });
+    return await response.json();
+  } catch {
+    return { status: "error", database: "unavailable", message: "Não foi possível consultar o servidor." };
+  }
+}
+
 export default function AndarZeroPage() {
   const [health, setHealth] = useState<Health | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function verify() {
     setLoading(true);
-    try {
-      const response = await fetch("/health", { cache: "no-store" });
-      const result: Health = await response.json();
-      setHealth(result);
-    } catch {
-      setHealth({ status: "error", database: "unavailable", message: "Não foi possível consultar o servidor." });
-    } finally {
-      setLoading(false);
-    }
+    setHealth(await loadHealth());
+    setLoading(false);
   }
 
-  useEffect(() => { void verify(); }, []);
+  useEffect(() => {
+    let active = true;
+    void loadHealth().then((result) => {
+      if (active) { setHealth(result); setLoading(false); }
+    });
+    return () => { active = false; };
+  }, []);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col justify-center gap-6 p-8">
