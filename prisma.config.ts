@@ -52,7 +52,8 @@ export default defineConfig({
     ],
   },
   migrations: {
-    path: "prisma/migrations",
+    // Independent baseline for the dev schema. Preserve the imported public history.
+    path: "prisma/migrations-dev",
     initShadowDb: `
       CREATE SCHEMA IF NOT EXISTS auth;
 
@@ -92,7 +93,7 @@ export default defineConfig({
     `,
   },
   datasource: {
-    // Prisma Migrate must use the direct local PostgreSQL connection.
+    // Local validation uses the direct local connection; remote setup targets dev only.
     url: env("DIRECT_URL"),
   },
 });
