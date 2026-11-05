@@ -27,7 +27,7 @@ do PRD: autenticação, catálogo, empréstimos, devoluções e Operações.
 
 Repositório: https://github.com/MatheusBastosCastilho/EmpresTI.
 Vercel existente: projeto `empres-ti`, workspace `matbastoscastilho-8909`.
-Referências externas e diferenças: `referencias/gabriel/README.md`.
+Referências externas e diferenças: `referencias/README.md`.
 
 ## Etapa 1 — Integrações e prova da stack
 

@@ -2,7 +2,7 @@
 
 Isto não é uma spec: não há comportamento de produto aqui. É a verificação de
 que a stack decidida em `adr/001-stack.md` funciona junta num ambiente limpo.
-Fonte dos critérios: aula 8, preservada em `referencias/gabriel/aulas/`.
+Fonte dos critérios: aula 8, preservada em `referencias/aulas/`.
 
 ## Critérios de aceitação
 

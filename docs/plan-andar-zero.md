@@ -1,6 +1,6 @@
 # Plano — fechamento das aulas 7 e 8
 
-Data: 05/11/2026. Status: aguardando aprovação do recorte e das dependências.
+Data: 05/11/2026. Status: plano, execução sequencial e dependências aprovados pelo usuário em 05/11/2026. Testcontainers também autorizado.
 Prazo solicitado: 10h de São Paulo. Fontes: HTMLs preservados em
 `docs/referencias/aulas/`. Este plano não inclui concluir o produto inteiro.
 
