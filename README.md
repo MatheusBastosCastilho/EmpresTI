@@ -61,11 +61,15 @@ O cliente gerado, dependências, `.env` reais e builds não são versionados.
 - [ADR-001 aceito e alternativas](docs/adr/001-stack.md).
 - [AZ-01 a AZ-08](docs/andar-zero.md) e [plano](docs/plan-andar-zero.md).
 - [Revisão da organização](docs/revisao-estrutura.md).
-- [Rascunho da primeira funcionalidade real](docs/specs/003-login-real/spec.md).
+- [Spec do login real da prática SDD](docs/specs/003-login-real/spec.md).
 - [Materiais originais e atribuição](docs/referencias/README.md).
 - [Setup do dev remoto e GitHub](docs/setup-dev.md).
 
 ## Estado do produto e hospedagem
+
+A próxima atividade, com prazo informado de **11/11/2026**, está registrada em
+[Prática SDD e subagentes](docs/pratica-sdd-subagentes.md), com o HTML do professor,
+as entregas e os conflitos a decidir antes da implementação.
 
 [Login publicado](https://empres-ti-beryl.vercel.app/login): validação local,
 mostrar/ocultar senha e envio demonstrativo; não autentica nem persiste credenciais.

@@ -1,10 +1,13 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { LoginForm } from "@/components/login/login-form";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe("LoginForm", () => {
   it("test_ca_09_impede_envio_com_campos_vazios_ou_email_invalido", async () => {
@@ -51,7 +54,9 @@ describe("LoginForm", () => {
     expect(password).toHaveAttribute("type", "password");
   });
 
-  it("test_ca_11_envia_por_enter_e_informa_que_o_acesso_e_demonstrativo", async () => {
+  it("LOGIN-03 envia por Enter e mantém a mensagem genérica na falha", async () => {
+    const request = vi.fn().mockResolvedValue({ ok: false });
+    vi.stubGlobal("fetch", request);
     const user = userEvent.setup();
     render(<LoginForm />);
     const initialUrl = window.location.href;
@@ -59,7 +64,8 @@ describe("LoginForm", () => {
     await user.type(screen.getByLabelText("E-mail corporativo"), "marina@empresa.com.br");
     await user.type(screen.getByLabelText("Senha"), "senha-de-demonstracao{Enter}");
 
-    expect(screen.getByRole("status")).toHaveTextContent("O acesso à conta ainda não está habilitado.");
+    expect(await screen.findByRole("status")).toHaveTextContent("Não foi possível entrar.");
+    expect(request).toHaveBeenCalledWith("/api/trpc/login", expect.objectContaining({ method: "POST" }));
     expect(window.location.href).toBe(initialUrl);
 
     await user.type(screen.getByLabelText("Senha"), "1");

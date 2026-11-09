@@ -5,13 +5,15 @@ BEGIN;
 DO $$
 BEGIN
   IF (SELECT count(*) FROM pg_tables WHERE schemaname = 'dev'
-      AND tablename <> '_prisma_migrations') <> 6 THEN
+      AND tablename NOT IN ('_prisma_migrations', 'login_attempts')) <> 6 THEN
     RAISE EXCEPTION 'Expected six domain tables in dev';
   END IF;
-  IF (SELECT count(*) FROM pg_tables WHERE schemaname = 'dev' AND rowsecurity) <> 6 THEN
+  IF (SELECT count(*) FROM pg_tables WHERE schemaname = 'dev' AND rowsecurity
+      AND tablename <> 'login_attempts') <> 6 THEN
     RAISE EXCEPTION 'Every domain table must have RLS';
   END IF;
-  IF (SELECT count(*) FROM pg_policies WHERE schemaname = 'dev') <> 14 THEN
+  IF (SELECT count(*) FROM pg_policies WHERE schemaname = 'dev'
+      AND tablename <> 'login_attempts') <> 14 THEN
     RAISE EXCEPTION 'Expected fourteen explicit RLS policies';
   END IF;
   IF to_regclass('auth.users') IS NULL THEN
@@ -96,5 +98,32 @@ BEGIN
 END;
 $$;
 RESET ROLE;
+
+DO $$
+DECLARE
+  api_role text;
+BEGIN
+  IF NOT (SELECT relrowsecurity FROM pg_class WHERE oid = 'dev.login_attempts'::regclass) THEN
+    RAISE EXCEPTION 'Login attempts must have RLS enabled';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'dev'
+      AND tablename = 'login_attempts' AND policyname = 'login_attempts_deny_client'
+      AND permissive = 'RESTRICTIVE') THEN
+    RAISE EXCEPTION 'Login attempts must have an explicit deny policy';
+  END IF;
+  FOREACH api_role IN ARRAY ARRAY['anon', 'authenticated', 'service_role'] LOOP
+    IF has_table_privilege(api_role, 'dev.login_attempts', 'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') THEN
+      RAISE EXCEPTION 'Login attempts must be private to the database runtime';
+    END IF;
+  END LOOP;
+  BEGIN
+    INSERT INTO dev.login_attempts (id, account_key, ip_key)
+    VALUES ('80000000-0000-0000-0000-000000000001', decode('00', 'hex'), decode(repeat('01', 32), 'hex'));
+    RAISE EXCEPTION 'Invalid login attempt key length must fail';
+  EXCEPTION WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
 ROLLBACK;
 SELECT 'dev schema smoke checks passed' AS result;

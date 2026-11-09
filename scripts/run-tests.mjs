@@ -40,7 +40,9 @@ try {
   run("node_modules/prisma/build/index.js", ["migrate", "deploy"], env);
   await client.query(readFileSync(new URL("../prisma/tests/dev-smoke.sql", import.meta.url), "utf8"));
   console.log("Smoke de constraints/RLS passou no banco novo.");
-  run("node_modules/vitest/vitest.mjs", ["run"], env);
+  // Keep Node and jsdom in separate Vitest processes so a reused worker never changes environments.
+  run("node_modules/vitest/vitest.mjs", ["run", "tests/"], env);
+  run("node_modules/vitest/vitest.mjs", ["run", "components/"], env);
   console.log("AZ-03/AZ-06: migrations e testes passaram em PostgreSQL novo e isolado.");
 } catch (error) {
   console.error("Falha na suíte isolada:", error instanceof Error ? error.message.replace(/postgres(?:ql)?:\/\/[^\s]+/gi, "[conexão omitida]") : "erro desconhecido");

@@ -1,23 +1,25 @@
 # Handoff
 
-- Entrega das aulas 7/8 finalizada em 05/11/2026; prazo solicitado 10h de São Paulo.
-- Branch local: feat/andar-zero-aulas. Base main inclui PR #1, merge 28b8610.
-- Plano, execução sequencial, dependências e Testcontainers autorizados pelo usuário.
-- Docs: perguntas-prd, andar-zero, plan-andar-zero, revisão de estrutura e entrega-aulas.
-- Rascunho de login real em docs/specs/003-login-real/spec.md; não implementar sem nova autorização.
-- App: /andar-zero consome GET /health; Prisma consulta dev.tenants sem retornar dados do domínio.
-- Env validado por Zod; falha de conexão ou configuração retorna 503 genérico.
-- npm run up prepara Supabase local, cliente Prisma, migrations e Next; npm run down preserva dados.
-- npm test cria PostgreSQL descartável por Testcontainers; aplica migration e smoke RLS.
-- Resultado: 7 testes em 3 arquivos passaram; lint e build passaram.
-- Endpoint real: 200 conectado; após parar o banco, 503 indisponível. Evidência visual em docs/evidencias/andar-zero.jpg.
-- Cliente Prisma é gerado por up/build/test e ignorado no Git/ZIP.
-- AGENTS.md v1 atualizado com fatos executados; bloco automático Next preservado.
-- Referências reorganizadas em docs/referencias/; atribuição preservada e links ajustados.
-- Código e histórico anteriores à aula preservados; diferenças da ordem didática declaradas em entrega-aulas.
-- Produto completo ainda não implementado; login continua demonstrativo.
-- Nenhuma migration remota, alteração Vercel ou ação de produção nesta atividade.
-- Supabase próprio dev e workflow GitHub já estavam configurados e validados na sessão anterior.
-- ZIP de entrega em Downloads/EmpresTI-entrega-2026-11-05.zip, sem segredos, deps, builds ou .git.
-- O pacote inclui manifesto de integridade e log Git; ver README e docs/entrega-aulas.md.
-- Próximo passo: entregar o ZIP e, na próxima aula, revisar as perguntas do login real.
+- Aulas 7/8 concluídas em 05/11/2026. PR #2 entrou em origin/main no merge 8dc5782.
+- Tag andar-zero e ZIP EmpresTI-entrega-2026-11-05.zip em Downloads preservados.
+- O Supabase remoto dev e o workflow manual já estavam configurados e validados.
+- App das aulas: /andar-zero consulta /health, que usa Prisma em dev.tenants.
+- Comandos locais: npm run up/down, npm test em PostgreSQL descartável, lint e build.
+- Prática na branch codex/pratica-sdd-subagentes, com commits separados por etapa.
+- Prazo 11/11/2026. Consulte docs/pratica-sdd-subagentes.md e docs/plan-pratica-sdd.md.
+- HTML da prática em docs/referencias/aulas, com senha mascarada. Original em Downloads.
+- Usuário autorizou a sequência da atividade completa em 06/11/2026.
+- SDD-01: verificador Codex em sessão efêmera. O teste histórico bloqueou seis critérios de login sem evidência.
+- Lint, build e sete testes em PostgreSQL isolado passaram durante SDD-01.
+- SDD-02: skill em .agents/skills/imagens-equipamentos, com script PowerShell para Windows.
+- API simulada: busca, 12 JPEGs 800×600, manifesto idempotente e rejeição de IDs repetidos.
+- Pixabay: 12 fotos aprovadas, manifesto versionável e ZIP validado em Downloads.
+- Usuário confirmou 14 dias corridos, TI-0004/TI-0007/TI-0010 em manutenção e Pixabay.
+- Login aprovado na spec 003: sessão de 8 h e janela de 15 min, com 5 falhas por conta ou 20 por IP.
+- Migration 20261109121152_login_attempts aplicada no Supabase local e validada em PostgreSQL descartável.
+- Filtro de fotos permanece estrito por decisão do usuário.
+- O operador executa as escritas no deploy. Banco remoto não usado nesta prática.
+- Catálogo, empréstimos e Storage validados localmente; 12 testes, lint e build passaram.
+- Login validado localmente em LOGIN-01 a LOGIN-08; 9 testes, lint e build passaram.
+- Seed da spec 004 validado em PostgreSQL descartável; nenhuma conta docente real foi criada.
+- Próximo passo: seguir a publicação humana e fechar a evidência docente conforme ENTREGA.md.

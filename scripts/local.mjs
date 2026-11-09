@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { spawn, spawnSync } from "node:child_process";
+import { createHmac } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -15,6 +16,7 @@ function node(file, args, env = process.env, capture = false) {
     if (capture) console.error("Supabase local não iniciou. Verifique se o Docker Desktop está em execução e as portas locais estão livres.");
     throw new Error("Comando local falhou; nenhum destino remoto foi usado.");
   }
+  return result.stdout;
 }
 
 if (!existsSync(new URL("../node_modules/prisma", import.meta.url))) {
@@ -39,14 +41,24 @@ if (mode === "down") {
     }
   }
   const env = { ...process.env, ...fileConfig, DOTENV_CONFIG_PATH: fileURLToPath(envPath) };
-  console.log("Iniciando Supabase local (PostgreSQL, Auth e gateway)…");
-  node(supabase, ["start", "-x", "realtime,storage-api,imgproxy,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor"], env, true);
+  console.log("Iniciando Supabase local (PostgreSQL, Auth, Storage e gateway)…");
+  node(supabase, ["start", "-x", "realtime,imgproxy,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor"], env, true);
   node("node_modules/prisma/build/index.js", ["generate"], env);
   node("node_modules/prisma/build/index.js", ["migrate", "deploy"], env);
   if (process.argv.includes("--services-only")) {
     console.log("Serviços e migrations locais prontos; aplicação existente preservada.");
     process.exit(0);
   }
+  const auth = JSON.parse(node(supabase, ["status", "-o", "json"], env, true));
+  const api = new URL(auth.API_URL || "invalid:");
+  if (api.origin !== "http://127.0.0.1:54321" || !auth.PUBLISHABLE_KEY || !auth.JWT_SECRET) {
+    throw new Error("Configuração de Auth local indisponível.");
+  }
+  env.NEXT_PUBLIC_SUPABASE_URL = api.origin;
+  env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = auth.PUBLISHABLE_KEY;
+  env.LOGIN_RATE_LIMIT_KEY = createHmac("sha256", auth.JWT_SECRET)
+    .update("empres-ti:local:login-rate-limit")
+    .digest("hex");
   console.log("Abra http://localhost:3000/andar-zero. Ctrl+C encerra a aplicação; npm run down para os serviços.");
   const app = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev"], { cwd: root, env, stdio: "inherit" });
   process.on("SIGINT", () => app.kill("SIGINT"));

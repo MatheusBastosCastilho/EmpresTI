@@ -31,7 +31,8 @@ em tabela migrada; 503 indica indisponibilidade ou configuração inválida.
 
 ## Mapa de diretórios reais
 
-- `app/`: rotas e layouts do Next; `health/` é infraestrutura e `login/` permanece demonstrativo.
+- `app/`: rotas e layouts do Next. `health/` é infraestrutura, `login/` autentica
+  via tRPC e `catalogo/` exige sessão e vínculo com o tenant.
 - `components/`: componentes de login e primitivas `ui/`, com testes de interface.
 - `src/server/`: ambiente validado e Prisma, exclusivos do servidor.
 - `src/generated/prisma/`: cliente gerado por comando, ignorado pelo Git.
@@ -52,7 +53,8 @@ em tabela migrada; 503 indica indisponibilidade ou configuração inválida.
 - O cliente Prisma não vai no ZIP/Git; `up`, `build` e `test` o geram antes de usar.
 - `/health` é público, dinâmico e sem cache; retorna status genérico, não registros ou exceções.
 - O contrato SQL mínimo de Auth nos testes não implementa nem valida login.
-- O formulário publicado não cria sessão. Login real está apenas rascunhado em `docs/specs/003-login-real/spec.md`.
+- O login real foi exercitado no Supabase local. Ver a spec 003 para a
+  configuração do operador e o estado da publicação.
 
 ## Como testar e trabalhar
 
