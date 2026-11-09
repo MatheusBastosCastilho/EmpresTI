@@ -2,6 +2,9 @@
 
 **Status:** recorte de login aprovado; demais telas aguardam aprovação
 
+O comportamento demonstrativo registrado abaixo pertence à entrega original.
+Para autenticação e sessão da prática SDD, vale a [spec 003](../003-login-real/spec.md).
+
 **Origem:** `docs/prd.md` e `docs/layout.md`  
 **Decisão técnica:** `docs/adr/001-stack.md`
 

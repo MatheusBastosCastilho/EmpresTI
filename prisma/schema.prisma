@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
+  importFileExtension = "ts"
 }
 
 datasource db {
@@ -22,6 +23,19 @@ enum EquipmentStatus {
   RETIRED
 
   @@map("equipment_status")
+  @@schema("dev")
+}
+
+model LoginAttempt {
+  id          String   @id @db.Uuid
+  accountKey  Bytes    @map("account_key")
+  ipKey       Bytes    @map("ip_key")
+  attemptedAt DateTime @default(now()) @map("attempted_at") @db.Timestamptz(6)
+
+  @@index([accountKey, attemptedAt], map: "login_attempts_account_time_idx")
+  @@index([ipKey, attemptedAt], map: "login_attempts_ip_time_idx")
+  @@index([attemptedAt], map: "login_attempts_expiration_idx")
+  @@map("login_attempts")
   @@schema("dev")
 }
 

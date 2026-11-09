@@ -64,9 +64,6 @@ export default function LoginPage() {
               <p className="text-[13px] leading-6 text-muted-foreground">
                 Use seu e-mail corporativo para acessar o EmpresTI.
               </p>
-              <p className="text-xs leading-5 text-muted-foreground">
-                Ambiente de demonstração. Use dados fictícios.
-              </p>
             </div>
           </div>
 

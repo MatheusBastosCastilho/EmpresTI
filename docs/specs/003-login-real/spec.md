@@ -1,6 +1,8 @@
-# Rascunho — primeira funcionalidade real: login
+# Login real
 
-Status: rascunho para a próxima aula, sem autorização para implementação.
+Status: escopo funcional, parâmetros de segurança e DDL do controle de
+tentativas aprovados em 09/11/2026. Implementação validada localmente.
+O parecer formal aguarda uma revisão candidata registrada no Git.
 O login é a primeira funcionalidade real porque identifica a pessoa antes de
 expor empréstimos próprios e ações de Operações.
 
@@ -20,8 +22,21 @@ httpOnly, cadastro fechado, autorização e tenant no contexto tRPC.
 - Credenciais são validadas pelo Supabase Auth, nunca por tabela de senhas própria.
 - A sessão não é persistida em localStorage ou sessionStorage.
 - O tenant é resolvido da sessão e da membership, nunca de um input confiado.
+- Neste recorte, o vínculo existente em `suporte_ti` representa uma
+  membership ativa. Uma sessão revogada no Supabase perde o acesso mesmo
+  se alguém reapresentar um token ainda dentro do prazo.
 - O colaborador acessa somente os próprios dados; Operações tem ações por papel.
-- A tela mantém o layout aprovado. O formulário atual é apenas demonstrativo.
+- A tela mantém o layout aprovado e envia as credenciais ao procedimento de login.
+- Após autenticar uma conta com membership ativa, redirecionar para o Catálogo.
+- Quem estiver sem acesso procura Operações. A resposta pública mantém a
+  mensagem genérica e evita revelar quais contas existem.
+- A conta do professor é provisionada como colaborador de `suporte_ti`.
+  Os testes de empréstimo usam outra conta.
+- A sessão dura no máximo oito horas desde a autenticação. Renovar o token
+  durante o uso sem estender esse prazo.
+- Aplicar janela de 15 minutos para falhas de login. Bloquear novas tentativas
+  após cinco falhas por conta ou vinte por IP, com contagem compartilhada no
+  PostgreSQL. A resposta não identifica qual limite foi atingido.
 
 ## Critérios de aceitação propostos
 
@@ -32,29 +47,35 @@ httpOnly, cadastro fechado, autorização e tenant no contexto tRPC.
 - LOGIN-05: o contexto ignora tentativas de trocar o tenant pelo input.
 - LOGIN-06: o logout encerra a sessão e impede reutilizar a rota protegida.
 
-Os critérios dependentes das perguntas abaixo serão refinados com o time antes
-de implementar, sem completar lacunas de negócio por conta própria.
-
-## Perguntas classificadas
-
-1. Negócio: qual destino após entrar, Catálogo ou Meus empréstimos?
-2. Negócio: qual canal deve atender quem não recebeu convite ou foi desativado?
-3. Técnica: qual duração e política de renovação da sessão?
-4. Técnica: qual limite de tentativas e período do bloqueio no login?
-5. Fora de escopo a confirmar: recuperação de senha entra agora?
-6. Fora de escopo: login social, MFA e “lembrar de mim” continuam fora da primeira versão?
+- LOGIN-07: renovar o token preserva o limite original de oito horas.
+- LOGIN-08: tentativas simultâneas respeitam ambos os limites, incluindo
+  contas inexistentes. Após expirar a janela, o acesso pode ser tentado novamente.
 
 ## Fora de escopo
 
-Cadastro público, SSO, catálogo completo, empréstimo, devolução, reserva futura,
-e-mail de notificação e importação de planilha. Não implementar estas telas ao
-executar o andar zero.
+Cadastro público, recuperação de senha, login social, MFA, “lembrar de mim”,
+SSO, catálogo completo, empréstimo, devolução, reserva futura, e-mail de
+notificação e importação de planilha.
 
 ## Contrato afetado
 
-`/login`, sessão, contexto tRPC e proteção das rotas de produto. Não alterar o
-modelo de dados, o prazo de 14 dias nem o limite de três itens nesta funcionalidade.
+`/login`, sessão, contexto tRPC e proteção das rotas de produto. A tabela
+`dev.login_attempts` é exclusiva do controle de acesso. O modelo de empréstimos,
+o prazo de 14 dias e o limite de três itens seguem as regras existentes.
 O endpoint de infraestrutura `/health` permanece público e não retorna dados de usuários.
+
+## Configuração do ambiente
+
+`npm run up` lê a URL e a chave pública do Supabase local e injeta no processo
+do Next. A chave HMAC dos limites locais é derivada do segredo do Auth local
+com um rótulo dedicado. Os valores ficam em memória e o script não os imprime.
+O provedor de e-mail está habilitado no Auth local e o cadastro global continua
+desligado.
+
+Em preview e produção, o operador fornece `NEXT_PUBLIC_SUPABASE_URL`,
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` e `LOGIN_RATE_LIMIT_KEY` no painel.
+A última variável é exclusiva do servidor e requer 32 bytes aleatórios em
+hexadecimal. As instâncias do mesmo ambiente usam a mesma chave.
 
 ## O que o andar zero já garante e não será reescrito
 

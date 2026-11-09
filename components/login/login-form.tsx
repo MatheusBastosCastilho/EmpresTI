@@ -8,11 +8,30 @@ import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [failed, setFailed] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    const fields = new FormData(event.currentTarget);
+    setSubmitting(true);
+    setFailed(false);
+    try {
+      const response = await fetch("/api/trpc/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ json: { email: fields.get("email"), password: fields.get("password") } }),
+      });
+      if (response.ok) {
+        window.location.replace("/catalogo");
+        return;
+      }
+      setFailed(true);
+    } catch {
+      setFailed(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -20,7 +39,7 @@ export function LoginForm() {
       aria-label="Entrar no EmpresTI"
       method="post"
       onSubmit={handleSubmit}
-      onChange={() => setSubmitted(false)}
+      onChange={() => setFailed(false)}
       className="flex flex-col gap-5"
     >
       <div className="flex flex-col gap-[18px]">
@@ -30,6 +49,7 @@ export function LoginForm() {
           </Label>
           <Input
             id="email"
+            name="email"
             type="email"
             autoComplete="username"
             autoCapitalize="none"
@@ -48,6 +68,7 @@ export function LoginForm() {
           <div className="relative">
             <Input
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               placeholder="Digite sua senha"
@@ -68,16 +89,15 @@ export function LoginForm() {
         </div>
       </div>
 
-      <Button type="submit" size="login" className="w-full">
-        Entrar
+      <Button type="submit" size="login" className="w-full" disabled={submitting}>
+        {submitting ? "Entrando…" : "Entrar"}
         <i aria-hidden="true" className="ph ph-arrow-right text-base" />
       </Button>
 
       <div aria-live="polite" aria-atomic="true">
-        {submitted && (
+        {failed && (
           <p role="status" className="rounded-lg border border-accent-700 bg-sunken p-3 text-xs leading-5 text-accent-300">
-            Esta é uma prévia da tela de login. O acesso à conta ainda não está
-            habilitado.
+            Não foi possível entrar. Confira os dados, tente mais tarde ou procure Operações.
           </p>
         )}
       </div>
