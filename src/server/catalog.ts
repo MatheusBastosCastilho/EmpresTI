@@ -59,7 +59,7 @@ export async function requestLoan(db: PrismaClient, member: Membership, equipmen
     if (loans.some(({ dueAt }) => dueAt < clock.time)) {
       throw new TRPCError({ code: "PRECONDITION_FAILED" });
     }
-    if (loans.length >= 3) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+    if (loans.length >= 4) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
     const loan = await tx.loan.create({
       data: {
