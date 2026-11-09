@@ -7,6 +7,7 @@ import { z } from "zod";
 import { createAuthClient, findMembership, readMembership } from "@/src/server/auth/session";
 import { finishLoginAttempt, readClientIp, reserveLoginAttempt } from "@/src/server/auth/login-attempts";
 import { getDatabase } from "@/src/server/db";
+import { readCatalog, readMyLoans, requestLoan } from "@/src/server/catalog";
 
 export function createContext(request: Request) {
   return {
@@ -71,4 +72,9 @@ export const appRouter = t.router({
     return { success: true };
   }),
   session: tenantProcedure.input(noInput).query(({ ctx }) => ({ role: ctx.membership.role })),
+  catalog: tenantProcedure.input(z.object({ cursor: z.string().max(100).optional() }).strict())
+    .query(({ ctx, input }) => readCatalog(ctx.db, ctx.membership.tenantId, input.cursor)),
+  myLoans: tenantProcedure.input(noInput).query(({ ctx }) => readMyLoans(ctx.db, ctx.membership)),
+  requestLoan: tenantProcedure.input(z.object({ equipmentId: z.uuid() }).strict())
+    .mutation(({ ctx, input }) => requestLoan(ctx.db, ctx.membership, input.equipmentId)),
 });
