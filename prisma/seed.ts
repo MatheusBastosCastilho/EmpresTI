@@ -4,6 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { z } from "zod";
 
 import { PrismaClient } from "../src/generated/prisma/client.ts";
+import { databaseConnectionOptions } from "../src/server/database-tls.ts";
 
 const inventory = [
   ["TI-0001", "Notebook 14 polegadas", "Notebook"],
@@ -88,7 +89,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
       throw new Error("Destino inválido. Use o Supabase local ou, como operador, conexão direta TLS no schema dev.");
     }
 
-    const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: target.href }) });
+    const db = new PrismaClient({
+      adapter: new PrismaPg(databaseConnectionOptions(target.href, process.env.SUPABASE_DB_CA_CERT)),
+    });
     try {
       const result = await seedDatabase(db, teacher.data);
       console.log(JSON.stringify(result));

@@ -77,6 +77,11 @@ Em preview e produção, o operador fornece `NEXT_PUBLIC_SUPABASE_URL`,
 A última variável é exclusiva do servidor e requer 32 bytes aleatórios em
 hexadecimal. As instâncias do mesmo ambiente usam a mesma chave.
 
+Para o pooler do Supabase, configure `DATABASE_URL` com a conexão do schema
+`dev` e `SUPABASE_DB_CA_CERT` com o certificado PEM baixado do painel do
+projeto. A aplicação verifica a cadeia e o hostname com esse certificado.
+O seed remoto aceita a mesma variável de certificado no processo do operador.
+
 ## O que o andar zero já garante e não será reescrito
 
 - AZ-02: conexão configurada e falha de banco observável; login trata o acesso,
