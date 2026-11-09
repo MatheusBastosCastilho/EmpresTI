@@ -1,10 +1,14 @@
 # Prática SDD do EmpresTI
 
 [Repositório](https://github.com/MatheusBastosCastilho/EmpresTI) ·
-[Login publicado na entrega anterior](https://empres-ti-beryl.vercel.app/login)
+[Projeto em produção](https://empres-ti-beryl.vercel.app/login)
 
-Esta é a revisão local da prática. A publicação e a tag `entrega-pratica`
-dependem da validação pelo operador. O deploy anterior não comprova esta revisão.
+A revisão `5e26c66` está publicada e foi validada em produção.
+O [registro da validação](docs/evidencias/pratica-local.md#validação-na-vercel-em-09112026)
+documenta o login docente, as fotos e o teste de empréstimo com conta separada.
+O critério CA-03 da spec 004 verifica o acesso docente com a senha padrão
+do enunciado, o vínculo de colaborador e os zero empréstimos da conta.
+O parecer final aprovou todos os critérios de login, dados iniciais e catálogo.
 
 ## Decisões
 
@@ -57,8 +61,9 @@ IDs revisados ficaram no [plano da prática](docs/plan-pratica-sdd.md).
   [Tabelas do verificador](docs/evidencias/verificador-pratica.md)
 - No parecer sobre o commit de reversão, os oito critérios de login foram
   aprovados. Nos dados iniciais, CA-03 aguarda evidência da conta docente real
-  e da entrega privada da credencial. No catálogo, CA-07 aguarda as URLs do
-  Storage no deploy. Os demais critérios passaram.
+  e da entrega privada da credencial naquele parecer. No catálogo, CA-07 ainda
+  aguardava as URLs do Storage no deploy. Os resultados operacionais posteriores
+  estão no registro da validação em produção.
 - O login foi validado por HTTP com contas descartáveis no Supabase local.
   A renovação preservou o horário de autenticação. O PostgreSQL descartável
   verificou o controle de tentativas. O verificador apontou replay de token
@@ -88,7 +93,6 @@ domínio. [Smoke PostgreSQL](prisma/tests/dev-smoke.sql)
 2. O operador configura as variáveis da spec 003 no ambiente Vercel escolhido.
    Conferir as 12 URLs públicas, o acesso docente e o fluxo de empréstimo
    com conta separada. Conferir que o docente permanece com zero empréstimos.
-3. Completar a evidência de provisionamento docente e rodar o parecer na
-   revisão candidata da entrega.
+3. Consultar o registro da validação e o parecer das três specs.
 4. Publicar a tag `entrega-pratica` na revisão que contém as evidências
    e registrar o link da versão publicada.

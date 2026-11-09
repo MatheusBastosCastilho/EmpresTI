@@ -16,3 +16,27 @@ Para repetir a regressão de sessão, suba os serviços locais com
 `node scripts/local.mjs up --services-only` e rode
 `node scripts/test-logout-local.mjs`. O teste usa uma conta descartável e
 remove seus dados ao finalizar. `npm test` executa a suíte isolada.
+
+## Validação na Vercel em 09/11/2026
+
+Revisão publicada `5e26c66607bd1a344daad018e70a04b4f8b24573`.
+
+| Critério | Resultado observado |
+| --- | --- |
+| Login | `/health` respondeu 200. `/catalogo` sem sessão redirecionou a `/login`. A conta docente entrou com a senha padrão do enunciado original, abriu o catálogo e encerrou a sessão. O cadastro público está desativado no Supabase. |
+| Spec 004, CA-01 a CA-05 | Duas execuções do seed preservaram 12 patrimônios e três itens em manutenção. A conta docente é colaboradora de `suporte_ti` e tem zero empréstimos. Os 12 objetos públicos correspondem aos hashes do manifesto. |
+| Spec 005, CA-01 a CA-04 e CA-06 | Uma conta separada solicitou TI-0001, TI-0002 e TI-0003. Cada empréstimo apareceu na lista com devolução em 23/11/2026 e deixou de ser solicitável. TI-0004 não apresentou botão de solicitação. A quarta tentativa, para TI-0005, recebeu a mensagem de limite. O banco confirmou o prazo de 14 dias e três registros `loan.requested`. |
+| Spec 005, CA-07 | O catálogo autenticado exibiu 12 patrimônios e 12 referências às fotos do Storage público. |
+
+O encerramento operacional no schema `dev` liberou os três itens de teste e
+registrou três eventos `loan.test_closed`, preservando o histórico. Ao final,
+havia nove itens disponíveis, três em manutenção e zero empréstimos docentes.
+
+O verificador avaliou o snapshot `ab4f69f35b78d799ca368f204cf5c4da6e7ad70e`
+contra `8dc5782`. Aprovou LOGIN-01 a LOGIN-08 e CA-01 a CA-07 da spec 005.
+Na spec 004, aprovou CA-01, CA-02, CA-04 e CA-05. CA-03 ficou sem evidência
+da entrega privada da credencial, embora o vínculo e os zero empréstimos
+tenham sido confirmados no deploy.
+
+Após alinhar CA-03 ao enunciado, o verificador aprovou os cinco critérios da
+spec 004 no snapshot `3226edd03d6d10d84ffa6eace6b01fe8cdf4c071`.

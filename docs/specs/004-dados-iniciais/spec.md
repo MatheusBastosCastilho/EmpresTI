@@ -30,7 +30,8 @@ seed não reativa um equipamento nem muda o papel de uma conta existente.
 - CA-02: três itens começam em manutenção, nove em disponibilidade e nenhum
   empréstimo é criado.
 - CA-03: o usuário docente tem vínculo de colaborador e zero empréstimos.
-  A credencial é entregue pelo operador fora do repositório.
+  A conta entra no deploy com a senha padrão do enunciado original. A senha
+  fica fora do repositório.
 - CA-04: rodar o seed duas vezes não duplica registros e preserva empréstimos,
   vínculos e estados operacionais existentes.
 - CA-05: cada item aponta para uma foto distinta, revisada e com 800×600.
