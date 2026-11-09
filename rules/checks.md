@@ -22,6 +22,11 @@ Sempre que você for dizer “pronto”, “implementado” ou “funcionando”
 4. Rode `git status --short`. Só podem aparecer arquivos do escopo
    da tarefa.
 5. Diga qual critério de aceitação (`CA-xx`) esta tarefa atende.
+6. Para encerrar uma spec da prática SDD, execute
+   `node scripts/verify-spec.mjs docs/specs/NNN-nome/spec.md` depois de o
+   operador registrar a revisão candidata. O comando inicia o verificador
+   automaticamente. Saída diferente de zero impede o fechamento. Guarde o
+   parecer da revisão que foi verificada e repita após qualquer correção.
 
 ## Verificação
 
