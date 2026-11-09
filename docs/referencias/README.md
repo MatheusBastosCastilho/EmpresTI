@@ -13,3 +13,12 @@ importado nesta etapa.
 A organização deste material foi simplificada de `referencias/gabriel/` para
 `referencias/` durante a revisão. A origem permanece explícita para atribuição.
 O fechamento e as evidências da atividade estão em `../entrega-aulas.md`.
+
+## Próxima prática — até 11/11/2026
+
+O arquivo [pratica-sdd-subagentes.html](aulas/pratica-sdd-subagentes.html) foi
+fornecido diretamente pelo usuário em 05/11/2026. Sua senha explícita foi
+mascarada na cópia versionável; o original está preservado em Downloads.
+As cinco entregas, conflitos e dependências estão no
+[registro da próxima prática](../pratica-sdd-subagentes.md). O enunciado não
+substitui PRD, ADRs, specs ou autorizações da sessão.
