@@ -1,18 +1,15 @@
-# Referências das aulas e do projeto consultado
+# Material de aula e referências técnicas
 
-Os HTMLs em `aulas/` são o material do professor das aulas 7 e 8. Foram obtidos
-do repositório https://github.com/GabrielMartinsss26/EmpresTI, no commit
-`848eff98cf81536557fdc44d33b81021ce06bdba`, consultado em 23/10/2026.
+O diretório `aulas/` reúne o material didático do professor, incluindo os
+HTMLs das aulas 7 e 8 e o enunciado da prática SDD. O fechamento e as evidências
+das aulas 7 e 8 estão em [entrega-aulas.md](../entrega-aulas.md).
 
-Os arquivos `modelo-de-dados-original.md` e `producao-original.md` são snapshots
-do projeto de referência. Não substituem as decisões, specs ou procedimentos
-locais. O modelo original exige aprovação de empréstimos; nosso modelo aprovado
-é de empréstimo imediato. Nenhuma credencial ou código de aplicação do amigo foi
-importado nesta etapa.
+Os arquivos `modelo-de-dados-original.md` e `producao-original.md` documentam
+um modelo consultado durante a análise. Esse modelo prevê aprovação de
+empréstimos. A spec deste EmpresTI adota o empréstimo imediato.
 
-A organização deste material foi simplificada de `referencias/gabriel/` para
-`referencias/` durante a revisão. A origem permanece explícita para atribuição.
-O fechamento e as evidências da atividade estão em `../entrega-aulas.md`.
+Os HTMLs das aulas 7 e 8 e os dois documentos de referência foram obtidos da
+[revisão consultada em 23/10/2026](https://github.com/GabrielMartinsss26/EmpresTI/tree/848eff98cf81536557fdc44d33b81021ce06bdba).
 
 ## Próxima prática — até 11/11/2026
 
