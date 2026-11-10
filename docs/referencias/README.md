@@ -8,9 +8,6 @@ Os arquivos `modelo-de-dados-original.md` e `producao-original.md` documentam
 um modelo consultado durante a análise. Esse modelo prevê aprovação de
 empréstimos. A spec deste EmpresTI adota o empréstimo imediato.
 
-Os HTMLs das aulas 7 e 8 e os dois documentos de referência foram obtidos da
-[revisão consultada em 23/10/2026](https://github.com/GabrielMartinsss26/EmpresTI/tree/848eff98cf81536557fdc44d33b81021ce06bdba).
-
 ## Próxima prática — até 11/11/2026
 
 O arquivo [pratica-sdd-subagentes.html](aulas/pratica-sdd-subagentes.html) foi
